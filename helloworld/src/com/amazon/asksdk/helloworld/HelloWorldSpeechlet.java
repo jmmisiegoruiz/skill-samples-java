@@ -24,6 +24,8 @@ import com.amazon.speech.ui.SimpleCard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,6 +36,8 @@ public class HelloWorldSpeechlet implements SpeechletV2 {
 
     @Autowired
     String helloResponseText;
+    @Autowired
+    public JavaMailSender emailSender;
 
     private static final Logger log = LoggerFactory.getLogger(HelloWorldSpeechlet.class);
 
@@ -61,6 +65,11 @@ public class HelloWorldSpeechlet implements SpeechletV2 {
         String intentName = (intent != null) ? intent.getName() : null;
 
         if ("HelloWorldIntent".equals(intentName)) {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo("another.user@gmail.com");
+            message.setSubject(helloResponseText);
+            message.setText(helloResponseText);
+            emailSender.send(message);
             return getHelloResponse();
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             return getHelpResponse();
