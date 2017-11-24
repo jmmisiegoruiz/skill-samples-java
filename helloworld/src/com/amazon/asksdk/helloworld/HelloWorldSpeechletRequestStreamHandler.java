@@ -9,10 +9,10 @@
  */
 package com.amazon.asksdk.helloworld;
 
+import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * This class could be the handler for an AWS Lambda function powering an Alexa Skills Kit
@@ -24,15 +24,21 @@ import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
 public final class HelloWorldSpeechletRequestStreamHandler extends SpeechletRequestStreamHandler {
     private static final Set<String> supportedApplicationIds;
     static {
+
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        ctx.register(AppConfig.class);
+        ctx.refresh();
+
         /*
          * This Id can be found on https://developer.amazon.com/edw/home.html#/ "Edit" the relevant
          * Alexa Skill and put the relevant Application Ids in this Set.
          */
         supportedApplicationIds = new HashSet<String>();
         // supportedApplicationIds.add("[unique-value-here]");
+
     }
 
     public HelloWorldSpeechletRequestStreamHandler() {
-        super(new HelloWorldSpeechlet(), supportedApplicationIds);
+        super(new ProxySpeechlet(), supportedApplicationIds);
     }
 }
